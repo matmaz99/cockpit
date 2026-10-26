@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { TopBar } from '@/components/TopBar';
 import { Badge } from '@/components/ds/Metric';
 import { PRODUCTS, type Product } from '@/lib/products';
+import { snapshot } from '@/lib/snapshot';
 
 export const metadata: Metadata = { title: 'Portefeuille' };
 export const dynamic = 'force-dynamic';
@@ -22,6 +23,9 @@ function sources(p: Product): { label: string; ok: boolean }[] {
 export default async function Portfolio({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const { days: d } = await searchParams;
   const days = [7, 30, 90].includes(Number(d)) ? Number(d) : 7;
+  const snaps = await Promise.all(PRODUCTS.map((p) => snapshot(p.id, days).catch(() => null)));
+  const fr = (n: number) => n.toLocaleString('fr-FR');
+  const wow = (v: number | null | undefined) => (v === null || v === undefined ? '' : `${v > 0 ? '+' : ''}${v} %`);
   return (
     <main className="sp-admin">
       <TopBar days={days} path="/" />
@@ -41,14 +45,17 @@ export default async function Portfolio({ searchParams }: { searchParams: Promis
               </tr>
             </thead>
             <tbody>
-              {PRODUCTS.map((p) => (
+              {PRODUCTS.map((p, i) => {
+                const s = snaps[i];
+                const live = !!s && !s.warnings.some((w) => w.startsWith('Source') || w.startsWith('Lecture'));
+                return (
                 <tr key={p.id}>
                   <td>
-                    <span className="ck-name"><i className="ck-health" title="Santé : pas encore calculée" />{p.name}</span>
+                    <Link href={`/p/${p.id}?days=${days}`} className="ck-name"><i className="ck-health" title="Santé : calculée à partir du jour 5" />{p.name}</Link>
                     <span className="ck-sub">{p.regulation}</span>
                   </td>
-                  <td className="num ck-muted">–</td>
-                  <td className="num ck-muted">–</td>
+                  <td className="num">{live ? <>{fr(s!.traffic.visitors)}<span className="ck-sub">{wow(s!.traffic.wow.visitors)}</span></> : <span className="ck-muted">–</span>}</td>
+                  <td className="num">{live ? <>{fr(s!.leads.total)}<span className="ck-sub">{wow(s!.traffic.wow.leads)}</span></> : <span className="ck-muted">–</span>}</td>
                   <td className="num ck-muted">–</td>
                   <td className="ck-muted">–</td>
                   <td className="num ck-muted">–</td>
@@ -60,12 +67,13 @@ export default async function Portfolio({ searchParams }: { searchParams: Promis
                     </span>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
         <p className="ck-note">
-          Les chiffres arrivent avec les adaptateurs (jours 2 à 5). Sites : {PRODUCTS.map((p, i) => (
+          Visiteurs et leads sur la période, variation sur les 7 derniers jours. Revenu, déploiements et décisions arrivent aux jours 3 à 5. Sites : {PRODUCTS.map((p, i) => (
             <span key={p.id}>{i ? ', ' : ''}<Link href={p.url}>{p.url.replace(/^https:\/\//, '')}</Link></span>
           ))}.
         </p>

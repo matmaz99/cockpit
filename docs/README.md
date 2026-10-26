@@ -23,7 +23,7 @@ One page to follow the four regulation products side by side: Portail DPE, Parks
 | Day | Build | Status |
 |---|---|---|
 | 1 | Skeleton, design system, login, product registry, portfolio shell | done |
-| 2 | Blob adapter (Parksun, Cadastre tertiaire, DPE immeuble), normalised funnel, product page | |
+| 2 | Blob adapter (Parksun, Cadastre tertiaire, DPE immeuble), normalised funnel, product page | done |
 | 3 | Portail DPE adapter on the Supabase admin functions, leads pages | |
 | 4 | Hourly snapshot job and cockpit Blob store, ops page (deploys, errors, e-mail, data freshness) | |
 | 5 | Governance from the repos' docs, health signal, week-over-week | |
