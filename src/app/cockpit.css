@@ -1,0 +1,21 @@
+/* Cockpit additions on top of the Parksun design system (globals.css, copied as is). */
+
+.sp-error { padding: 10px 12px; border-radius: var(--radius-sm); background: var(--alert-soft); color: var(--alert); font: 500 13px/18px var(--font-sans); }
+
+.ck-brand { display: flex; align-items: baseline; gap: var(--space-2); text-decoration: none; color: var(--ink); }
+.ck-brand b { font: 400 22px/28px var(--font-display); letter-spacing: -0.02em; }
+.ck-brand span { font: 500 12px/16px var(--font-mono); color: var(--ink-mute); }
+.ck-top-actions { display: flex; align-items: center; gap: var(--space-2); }
+.ck-top-actions form { margin: 0; }
+
+.ck-health { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--ink-faint); flex: none; }
+.ck-health--green { background: var(--solar); }
+.ck-health--amber { background: var(--caution); }
+.ck-health--red { background: var(--alert); }
+
+.ck-rows td:first-child { white-space: nowrap; }
+.ck-rows .ck-name { display: flex; align-items: center; gap: var(--space-2); font-weight: 600; }
+.ck-rows .ck-sub { display: block; font: 400 12px/16px var(--font-sans); color: var(--ink-mute); }
+.ck-muted { color: var(--ink-mute); }
+.ck-note { font: 400 13px/20px var(--font-sans); color: var(--ink-mute); }
+.ck-badges { display: flex; flex-wrap: wrap; gap: 4px; }
