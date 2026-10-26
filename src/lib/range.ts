@@ -27,3 +27,22 @@ export function rangeOf(days: number, now = Date.now()): Range {
 }
 
 export const parseDays = (v: string | undefined) => ([7, 30, 90].includes(Number(v)) ? Number(v) : 7);
+
+/** The instant of 00:00 in Paris on a YYYY-MM-DD (handles DST). From Portail DPE's admin. */
+export function parisMidnight(day: string): Date {
+  const [y, m, d] = day.split('-').map(Number);
+  const guess = new Date(Date.UTC(y, m - 1, d, 0, 0, 0));
+  const tz = new Intl.DateTimeFormat('en-US', { timeZone: PARIS, timeZoneName: 'shortOffset' })
+    .formatToParts(guess)
+    .find((p) => p.type === 'timeZoneName')?.value ?? 'GMT+1';
+  const match = tz.match(/GMT([+-]\d+)(?::(\d+))?/);
+  const offsetMin = match ? Number(match[1]) * 60 + Math.sign(Number(match[1])) * Number(match[2] ?? 0) : 60;
+  return new Date(guess.getTime() - offsetMin * 60_000);
+}
+
+/** [from, to) instants of a range: Paris midnight of the first day to Paris midnight after the last. */
+export function instants(r: Range): { from: string; to: string } {
+  const [y, m, d] = r.to.split('-').map(Number);
+  const next = new Date(Date.UTC(y, m - 1, d + 1)).toISOString().slice(0, 10);
+  return { from: parisMidnight(r.from).toISOString(), to: parisMidnight(next).toISOString() };
+}

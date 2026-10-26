@@ -54,7 +54,7 @@ export interface Lead {
 }
 
 export interface FunnelStep {
-  key: EventType;
+  key: string;
   label: string;
   visitors: number;
   rate?: number; // % of the previous step

@@ -1,4 +1,4 @@
-import type { Event, Lead } from '../model';
+import type { Count, DayRow, Event, FunnelStep, Lead } from '../model';
 import type { Range } from '../range';
 
 /**
@@ -16,6 +16,11 @@ export interface ProductAdapter {
   revenue?(range: Range): Promise<{ cents: number; count: number }>;
   /** Dataset versions the product depends on. */
   dataVersions?(): Promise<{ dataset: string; version: string; asOf?: string }[]>;
+  /**
+   * Products that already aggregate in their own database (Portail DPE) return traffic and
+   * funnel directly instead of raw events; the snapshot then skips events().
+   */
+  summary?(range: Range): Promise<Summary>;
   /** Tracking installed or not, independent of whether anyone visited. */
   tracking: 'installed' | 'none';
 }
@@ -29,4 +34,16 @@ export function utcDaysCovering(range: Range): string[] {
     out.add(new Date(prev).toISOString().slice(0, 10));
   }
   return [...out].sort();
+}
+
+export interface Summary {
+  days: DayRow[];
+  visitors: number;
+  pageviews: number;
+  sources: Count[];
+  utm: Count[];
+  pages: Count[];
+  funnel: FunnelStep[];
+  revenueCents: number;
+  notes: string[];
 }
