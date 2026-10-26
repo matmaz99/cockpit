@@ -15,6 +15,5 @@ export function adapterFor(id: ProductId): ProductAdapter {
   if (p.store.kind === 'supabase') return portailDpeAdapter(process.env[p.store.urlEnv], process.env[p.store.keyEnv]);
   const blob = { storeName: p.store.storeName, token: process.env[p.store.tokenEnv] };
   if (p.store.layout === 'parksun') return parksunAdapter(blob);
-  // DPE immeuble shows a holding page with no tracking script yet.
-  return staticSiteAdapter(id, blob, id === 'dpe-immeuble' ? 'none' : 'installed');
+  return staticSiteAdapter(id, blob, 'installed');
 }

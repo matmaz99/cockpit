@@ -30,6 +30,7 @@ async function build(id: ProductId, days: number): Promise<ProductSnapshot> {
     } catch (e) { warnings.push(`Lecture impossible : ${(e as Error).message}`); }
   }
   if (a.tracking === 'none') warnings.push('Suivi non installé sur le site.');
+  else if (a.readable() && !a.summary && !warnings.length && events.length === 0) warnings.push('Aucun événement reçu sur les 14 derniers jours : vérifier le suivi du site.');
   if (summary) {
     warnings.push(...summary.notes);
     const wd = (wideSummary ?? summary).days;
